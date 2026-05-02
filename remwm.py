@@ -586,8 +586,8 @@ def main(input_path: str, output_path: str, preview: bool, overwrite: bool, tran
         from io import BytesIO
         import random
 
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-        florence_model = Florence2ForConditionalGeneration.from_pretrained("florence-community/Florence-2-large").to(device).eval()
+        device = "cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu")
+        florence_model = Florence2ForConditionalGeneration.from_pretrained("florence-community/Florence-2-large", torch_dtype=torch.float32).to(device).eval()
         florence_processor = AutoProcessor.from_pretrained("florence-community/Florence-2-large")
 
         # Get sample image from input
@@ -656,9 +656,9 @@ def main(input_path: str, output_path: str, preview: bool, overwrite: bool, tran
     # ========== NORMAL PROCESSING MODE ==========
     output_path = Path(output_path)
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    device = "cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu")
     print(f"Using device: {device}")
-    florence_model = Florence2ForConditionalGeneration.from_pretrained("florence-community/Florence-2-large").to(device).eval()
+    florence_model = Florence2ForConditionalGeneration.from_pretrained("florence-community/Florence-2-large", torch_dtype=torch.float32).to(device).eval()
     florence_processor = AutoProcessor.from_pretrained("florence-community/Florence-2-large")
     logger.info("Florence-2 Model loaded")
 
